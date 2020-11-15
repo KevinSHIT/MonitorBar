@@ -312,7 +312,7 @@ LRESULT CDeskBand::__OnCreate(HWND hWnd)
 	ti.lpszText = TEXT("");
 	GetClientRect(hWnd, &ti.rect);
 	SendMessage(m_hToolTip, TTM_ADDTOOL, 0, (LPARAM)&ti);
-	SendMessage(m_hToolTip, TTM_SETTITLE, TTI_NONE, (LPARAM)TEXT("Details"));
+	SendMessage(m_hToolTip, TTM_SETTITLE, TTI_NONE, (LPARAM)TEXT("Detail"));
 	SendMessage(m_hToolTip, TTM_SETMAXTIPWIDTH, 0, SHRT_MAX);
 	m_hMenu = LoadMenu(g_hInst, MAKEINTRESOURCE(IDR_MENU_MAIN));
 	SetTimer(hWnd, nTIMER_ID, 1000, nullptr);
