@@ -73,7 +73,7 @@ const std::basic_string<TCHAR> CCpuTemperature::ToString( )const
 {
 	std::basic_ostringstream<TCHAR> ret;
 	if (m_pCpuTemp)
-		ret << _T("C P U 温度:") << std::setw(6) << m_pCpuTemp->GetValue( ) << _T("℃");
+		ret << _T("CPU TEMP:") << std::setw(6) << m_pCpuTemp->GetValue( ) << _T("℃");
 	return ret.str( );
 }
 
@@ -81,13 +81,13 @@ const std::wstring CCpuTemperature::ToLongString( )const
 {
 	std::wostringstream ret;
 	if (m_sMax != SHRT_MIN)
-		ret << L"CPU最高温度:" << std::setw(3) << m_sMax << L"℃" << std::endl;
+		ret << L"CPU Max Temp:" << std::setw(3) << m_sMax << L"℃" << std::endl;
 	if (m_sMin != SHRT_MAX)
-		ret << L"CPU最低温度:" << std::setw(3) << m_sMin << L"℃" << std::endl;
+		ret << L"CPU Min Temp:" << std::setw(3) << m_sMin << L"℃" << std::endl;
 	if (m_pCpuTemp->GetCpuCoreCount( ) > 1)
 	{
-		ret << L"CPU每个核心的温度\n"
-			<< L"核心号\t当前温度\t最高温度\t最低温度"
+		ret << L"Temp Per CPU Core\n"
+			<< L"ID\tCurrent\tMax\tMin"
 			<< std::endl;
 		for (DWORD i = 0; i < m_pCpuTemp->GetCpuCoreCount( ); ++i)
 		{
