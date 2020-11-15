@@ -60,11 +60,11 @@ const std::wstring CMemoryUsage::ToLongString( )const
 	ret << L"MEM Max Usage:" << std::setw(3) << m_dwMax
 		<< L"%\nMEM Min Usage:" << std::setw(3) << m_dwMin
 		<< L"%\nMEM Top 3\n"
-		<< std::setw(5) << L"Proc ID"
-		<< std::setw(8) << L"MEM Usage"
-		<< L"\tProc Name" << std::endl;
+		<< std::setw(8) << L"Proc ID\t"
+		<< std::setw(10) << L"Usage"
+		<< L"\tName" << std::endl;
 	for (auto & proc : m_maxProcesses)
-		ret << std::setw(6) << proc.pid
+		ret << std::setw(7) << proc.pid
 		<< std::setw(12) << __Bytes2String(proc.size)
 		<< L'\t' << proc.name << std::endl;
 	return ret.str( );

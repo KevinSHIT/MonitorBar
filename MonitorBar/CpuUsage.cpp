@@ -34,12 +34,12 @@ const std::wstring CCpuUsage::ToLongString( )const
 	ret << L"CPU Max Usage:" << std::setw(6) << std::setprecision(2) << std::fixed << m_dMax
 		<< L"%\nCPU Min Usage:" << std::setw(6) << std::setprecision(2) << std::fixed << m_dMin
 		<< L"%\nCPU Top 3\n"
-		<< std::setw(5) << L"Proc ID"
-		<< std::setw(8) << L"CPU Usage"
-		<< L"\tProc Name" << std::endl;
+		<< std::setw(8) << L"Proc ID\t"
+		<< std::setw(8) << L"Usage"
+		<< std::setw(8) << L"\tName" << std::endl;
 	for (auto & proc : m_pairMaxProcesses)
-		ret << std::setw(6) << proc.first
-		<< std::setw(9) << proc.second.cpu_usage << L"%\t"
+		ret << std::setw(7) << proc.first
+		<< std::setw(8) << proc.second.cpu_usage << L"%\t\t"
 		<< proc.second.name << std::endl;
 	return ret.str( );
 }

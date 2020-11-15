@@ -97,13 +97,13 @@ const std::wstring CCpuTemperature::ToLongString( )const
 			else
 				ret << L"\t";
 			if (m_pMaxOfEachCpuCoreTemp[i] != SHRT_MIN)
-				ret << L"\t\t" << m_pMaxOfEachCpuCoreTemp[i] << L"℃";
+				ret << L"\t" << m_pMaxOfEachCpuCoreTemp[i] << L"℃";
 			else
-				ret << L"\t\t";
+				ret << L"\t";
 			if (m_pMinOfEachCpuCoreTemp[i] != SHRT_MAX)
-				ret << L"\t\t" << m_pMinOfEachCpuCoreTemp[i] << L"℃";
+				ret << L"\t" << m_pMinOfEachCpuCoreTemp[i] << L"℃";
 			else
-				ret << L"\t\t";
+				ret << L"\t";
 			ret << std::endl;
 		}
 	}
