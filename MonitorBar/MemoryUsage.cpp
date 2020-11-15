@@ -50,19 +50,19 @@ bool CMemoryUsage::Init()
 const std::basic_string<TCHAR> CMemoryUsage::ToString( )const
 {
 	std::basic_ostringstream<TCHAR> ret;
-	ret << _T("内存使用率:") << std::setw(6) << m_dwCur << _T("％");
+	ret << _T("MEM USAGE:") << std::setw(6) << m_dwCur << _T("％");
 	return ret.str( );
 }
 
 const std::wstring CMemoryUsage::ToLongString( )const
 {
 	std::wostringstream ret;
-	ret << L"内存最大使用率:" << std::setw(3) << m_dwMax
-		<< L"%\n内存最小使用率:" << std::setw(3) << m_dwMin
-		<< L"%\n内存使用率前三的进程\n"
-		<< std::setw(5) << L"进程ID"
-		<< std::setw(8) << L"工作集使用量"
-		<< L"\t进程名" << std::endl;
+	ret << L"MEM Max Usage:" << std::setw(3) << m_dwMax
+		<< L"%\nMEM Min Usage:" << std::setw(3) << m_dwMin
+		<< L"%\nMEM Top 3\n"
+		<< std::setw(5) << L"Proc ID"
+		<< std::setw(8) << L"MEM Usage"
+		<< L"\tProc Name" << std::endl;
 	for (auto & proc : m_maxProcesses)
 		ret << std::setw(6) << proc.pid
 		<< std::setw(12) << __Bytes2String(proc.size)
