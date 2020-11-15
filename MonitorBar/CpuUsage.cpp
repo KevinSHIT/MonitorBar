@@ -23,7 +23,7 @@ CCpuUsage::~CCpuUsage( )
 const std::basic_string<TCHAR> CCpuUsage::ToString( )const
 {
 	std::basic_ostringstream<TCHAR> oss;
-	oss << _T("C P U 使用率:") << std::setw(6) << std::setprecision(2)
+	oss << _T("CPU USAGE:") << std::setw(6) << std::setprecision(2)
 		<< std::fixed << m_dCur << _T("％");
 	return oss.str( );
 }
@@ -31,12 +31,12 @@ const std::basic_string<TCHAR> CCpuUsage::ToString( )const
 const std::wstring CCpuUsage::ToLongString( )const
 {
 	std::wostringstream ret;
-	ret << L"CPU最大使用率:" << std::setw(6) << std::setprecision(2) << std::fixed << m_dMax
-		<< L"%\nCPU最小使用率:" << std::setw(6) << std::setprecision(2) << std::fixed << m_dMin
-		<< L"%\nCPU使用率前三的进程\n"
-		<< std::setw(5) << L"进程ID"
-		<< std::setw(8) << L"CPU使用率"
-		<< L"\t进程名" << std::endl;
+	ret << L"CPU Max Usage:" << std::setw(6) << std::setprecision(2) << std::fixed << m_dMax
+		<< L"%\nCPU Min Usage:" << std::setw(6) << std::setprecision(2) << std::fixed << m_dMin
+		<< L"%\nCPU Top 3\n"
+		<< std::setw(5) << L"Proc ID"
+		<< std::setw(8) << L"CPU Usage"
+		<< L"\tProc Name" << std::endl;
 	for (auto & proc : m_pairMaxProcesses)
 		ret << std::setw(6) << proc.first
 		<< std::setw(9) << proc.second.cpu_usage << L"%\t"
