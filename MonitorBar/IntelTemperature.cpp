@@ -11,7 +11,7 @@ CIntelTemperature::CIntelTemperature( )
 , nIA32_THERM_STATUS_MSR(0x019C)
 , nIA32_TEMPERATURE_TARGET(0x01A2)
 {
-	LOGOUT("CIntelTemperature¹¹Ôì");
+	LOGOUT("CIntelTemperatureï¿½ï¿½ï¿½ï¿½");
 }
 
 CIntelTemperature::~CIntelTemperature( )
@@ -21,7 +21,7 @@ CIntelTemperature::~CIntelTemperature( )
 		delete[] m_pTjMax;
 		m_pTjMax = nullptr;
 	}
-	LOGOUT("CIntelTemperatureÎö¹¹");
+	LOGOUT("CIntelTemperatureï¿½ï¿½ï¿½ï¿½");
 }
 
 STATUS_CODE CIntelTemperature::Init( )
@@ -211,16 +211,26 @@ double CIntelTemperature::GetPercent( )const
 {
 	if (!m_pTjMax)
 		return 0;
+	return ((double)m_sCur / 120.0) * 100.0; // 120 Â°C is MAX temp
+	/*
 	int all = 0, n = 0;
+	byte negativeTempCount = 0;
 	for (DWORD i = 0; i < GetCpuCoreCount( ); ++i)
 	{
 		if (m_pTjMax[i])
 		{
-			all += m_pTjMax[i];
-			++n;
+			if (m_pTjMax[i] > 0)
+			{
+				all += m_pTjMax[i];
+				++n;
+			}
+			else
+				++negativeTempCount;
 		}
 	}
-	return 100.0 - (double)( all * m_dwNumOfAvailableProcesses - m_nAllTemp *n ) / ( n*m_dwNumOfAvailableProcesses );
+	byte numOfValidProcesses = m_dwNumOfAvailableProcesses - negativeTempCount;
+	return 100.0 - (double)( all * numOfValidProcesses - m_nAllTemp * n ) / ( n * numOfValidProcesses);
+	*/
 }
 
 void CIntelTemperature::__InitTjMax(BYTE tjMax)
