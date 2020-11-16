@@ -182,7 +182,6 @@ void CIntelTemperature::Update( )
 {
 	m_nAllTemp = 0;
 	m_dwNumOfAvailableProcesses = 0;
-	byte negativeTempCount = 0;
 	for (DWORD i = 0; i < GetCpuCoreCount( ); ++i)
 	{
 		unsigned long long val;
@@ -197,14 +196,14 @@ void CIntelTemperature::Update( )
 			if (m_pEachCpuCoreTemp)
 				m_pEachCpuCoreTemp[i] = temp;
 			if (temp <= 0)
-				++negativeTempCount;
+				m_pEachCpuCoreTemp[i] = temp + 100;
 			else
 				m_nAllTemp += temp;
 			++m_dwNumOfAvailableProcesses;
 		}
 	}
 	if (m_dwNumOfAvailableProcesses)
-		m_sCur = short(m_nAllTemp / (m_dwNumOfAvailableProcesses - negativeTempCount));
+		m_sCur = short(m_nAllTemp / m_dwNumOfAvailableProcesses );
 }
 
 double CIntelTemperature::GetPercent( )const
