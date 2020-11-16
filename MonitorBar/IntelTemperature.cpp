@@ -196,7 +196,10 @@ void CIntelTemperature::Update( )
 			if (m_pEachCpuCoreTemp)
 				m_pEachCpuCoreTemp[i] = temp;
 			if (temp <= 0)
+			{
 				m_pEachCpuCoreTemp[i] = temp + 100;
+				m_nAllTemp += temp + 100;
+			}
 			else
 				m_nAllTemp += temp;
 			++m_dwNumOfAvailableProcesses;
