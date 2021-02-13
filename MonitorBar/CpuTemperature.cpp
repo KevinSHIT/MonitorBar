@@ -7,19 +7,19 @@
 #include<iomanip>
 #include"Log.h"
 
-CCpuTemperature::CCpuTemperature( )
-: m_sMax(SHRT_MIN)
-, m_sMin(SHRT_MAX)
-, eCPU_TYPE(GetCpuType( ))
-, m_pCpuTemp(nullptr)
-, m_pMaxOfEachCpuCoreTemp(nullptr)
-, m_pMinOfEachCpuCoreTemp(nullptr)
+CCpuTemperature::CCpuTemperature()
+    : m_sMax(SHRT_MIN)
+    , m_sMin(SHRT_MAX)
+    , eCPU_TYPE(GetCpuType())
+    , m_pCpuTemp(nullptr)
+    , m_pMaxOfEachCpuCoreTemp(nullptr)
+    , m_pMinOfEachCpuCoreTemp(nullptr)
 {
     LOGOUT("CCpuTemperature构造");
 }
 
 
-CCpuTemperature::~CCpuTemperature( )
+CCpuTemperature::~CCpuTemperature()
 {
     if (m_pCpuTemp)
     {
@@ -50,7 +50,7 @@ bool CCpuTemperature::Init()
     default:
         return false;
     }
-    if (STATUS_CODE::STATUS_CODE_NO_ERROR != m_pCpuTemp->Init( ))
+    if (STATUS_CODE::STATUS_CODE_NO_ERROR != m_pCpuTemp->Init())
     {
         delete m_pCpuTemp;
         m_pCpuTemp = nullptr;
@@ -69,27 +69,27 @@ bool CCpuTemperature::Init()
     return true;
 }
 
-const std::basic_string<TCHAR> CCpuTemperature::ToString( )const
+const std::basic_string<TCHAR> CCpuTemperature::ToString()const
 {
     std::basic_ostringstream<TCHAR> ret;
     if (m_pCpuTemp)
-        ret << _T("CPU TEMP:") << std::setw(6) << m_pCpuTemp->GetValue( ) << _T("℃");
-    return ret.str( );
+        ret << _T("CPU TEMP:") << std::setw(6) << m_pCpuTemp->GetValue() << _T("℃");
+    return ret.str();
 }
 
-const std::wstring CCpuTemperature::ToLongString( )const
+const std::wstring CCpuTemperature::ToLongString()const
 {
     std::wostringstream ret;
     if (m_sMax != SHRT_MIN)
         ret << L"CPU Max Temp:" << std::setw(3) << m_sMax << L"℃" << std::endl;
     if (m_sMin != SHRT_MAX)
         ret << L"CPU Min Temp:" << std::setw(3) << m_sMin << L"℃" << std::endl;
-    if (m_pCpuTemp->GetCpuCoreCount( ) > 1)
+    if (m_pCpuTemp->GetCpuCoreCount() > 1)
     {
         ret << L"Temp Per CPU Core\n"
             << L"ID\tCurrent\tMax\tMin"
             << std::endl;
-        for (DWORD i = 0; i < m_pCpuTemp->GetCpuCoreCount( ); ++i)
+        for (DWORD i = 0; i < m_pCpuTemp->GetCpuCoreCount(); ++i)
         {
             ret << i;
             if (m_pCpuTemp->GetCpuCoreTemp(i) != SHRT_MIN)
@@ -107,48 +107,48 @@ const std::wstring CCpuTemperature::ToLongString( )const
             ret << std::endl;
         }
     }
-    return ret.str( );
+    return ret.str();
 }
 
-const double CCpuTemperature::GetValue( )const
+const double CCpuTemperature::GetValue()const
 {
     if (m_pCpuTemp)
-        return m_pCpuTemp->GetPercent( );
+        return m_pCpuTemp->GetPercent();
     else
         return 0;
 }
 
-void CCpuTemperature::Update( )
+void CCpuTemperature::Update()
 {
     if (m_pCpuTemp)
     {
-        m_pCpuTemp->Update( );
-        if (m_pCpuTemp->GetValue( ) > m_sMax)m_sMax = m_pCpuTemp->GetValue( );
-        if (m_pCpuTemp->GetValue( ) < m_sMin)m_sMin = m_pCpuTemp->GetValue( );
-        if (m_pCpuTemp->GetCpuCoreCount( )>1)
-            for (DWORD i = 0; i < m_pCpuTemp->GetCpuCoreCount( ); ++i)
+        m_pCpuTemp->Update();
+        if (m_pCpuTemp->GetValue() > m_sMax)m_sMax = m_pCpuTemp->GetValue();
+        if (m_pCpuTemp->GetValue() < m_sMin)m_sMin = m_pCpuTemp->GetValue();
+        if (m_pCpuTemp->GetCpuCoreCount() > 1)
+            for (DWORD i = 0; i < m_pCpuTemp->GetCpuCoreCount(); ++i)
             {
-                if (m_pCpuTemp->GetCpuCoreTemp(i) != SHRT_MIN&&
+                if (m_pCpuTemp->GetCpuCoreTemp(i) != SHRT_MIN &&
                     m_pCpuTemp->GetCpuCoreTemp(i) > m_pMaxOfEachCpuCoreTemp[i])
                     m_pMaxOfEachCpuCoreTemp[i] = m_pCpuTemp->GetCpuCoreTemp(i);
-                if (m_pCpuTemp->GetCpuCoreTemp(i) != SHRT_MIN&&
+                if (m_pCpuTemp->GetCpuCoreTemp(i) != SHRT_MIN &&
                     m_pCpuTemp->GetCpuCoreTemp(i) < m_pMinOfEachCpuCoreTemp[i])
                     m_pMinOfEachCpuCoreTemp[i] = m_pCpuTemp->GetCpuCoreTemp(i);
             }
     }
 }
 
-void CCpuTemperature::Reset( )
+void CCpuTemperature::Reset()
 {
     if (m_pCpuTemp)
-        m_pCpuTemp->Reset( );
+        m_pCpuTemp->Reset();
     m_sMax = SHRT_MIN;
     m_sMin = SHRT_MAX;
     if (m_pMaxOfEachCpuCoreTemp)
-        for (DWORD i = 0; i < m_pCpuTemp->GetCpuCoreCount( ); ++i)
+        for (DWORD i = 0; i < m_pCpuTemp->GetCpuCoreCount(); ++i)
             m_pMaxOfEachCpuCoreTemp[i] = SHRT_MIN;
     if (m_pMinOfEachCpuCoreTemp)
-        for (DWORD i = 0; i < m_pCpuTemp->GetCpuCoreCount( ); ++i)
+        for (DWORD i = 0; i < m_pCpuTemp->GetCpuCoreCount(); ++i)
             m_pMinOfEachCpuCoreTemp[i] = SHRT_MAX;
 }
 
