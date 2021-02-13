@@ -2,7 +2,7 @@
 #include "AMD0FTemperature.h"
 #include<intrin.h>
 #include"Log.h"
-#include "FixTemperature.cpp"
+#include "FixTemperature.h"
 
 CAMD0FTemperature::CAMD0FTemperature()
     : m_cOffset(0)

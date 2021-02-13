@@ -51,6 +51,9 @@
     <ClCompile Include="Temperature.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="FixTemperature.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="MonitorBar.def">
@@ -95,6 +98,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Temperature.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FixTemperature.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

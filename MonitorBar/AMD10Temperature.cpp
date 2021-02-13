@@ -1,6 +1,6 @@
 #include "AMD10Temperature.h"
 #include"Log.h"
-#include "FixTemperature.cpp"
+#include "FixTemperature.h"
 
 CAMD10Temperature::CAMD10Temperature()
     : m_sMiscellaneousControlDeviceId(0)

@@ -2,7 +2,7 @@
 #include "IntelTemperature.h"
 #include<intrin.h>
 #include"Log.h"
-#include "FixTemperature.cpp"
+#include "FixTemperature.h"
 
 CIntelTemperature::CIntelTemperature()
     : m_pTjMax(nullptr)
