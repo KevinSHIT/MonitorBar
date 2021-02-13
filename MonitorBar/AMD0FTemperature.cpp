@@ -2,6 +2,7 @@
 #include "AMD0FTemperature.h"
 #include<intrin.h>
 #include"Log.h"
+#include "FixTemperature.cpp"
 
 CAMD0FTemperature::CAMD0FTemperature()
     : m_cOffset(0)
@@ -80,6 +81,7 @@ void CAMD0FTemperature::Update()
         if (STATUS_CODE::STATUS_CODE_NO_ERROR == sc)
         {
             short temp = (val >> 16 & 0xff) + m_cOffset;
+            temp = FixTemperature(temp);
             if (m_pEachCpuCoreTemp)
                 m_pEachCpuCoreTemp[i] = temp;
             all += temp;

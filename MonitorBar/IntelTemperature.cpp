@@ -2,6 +2,7 @@
 #include "IntelTemperature.h"
 #include<intrin.h>
 #include"Log.h"
+#include "FixTemperature.cpp"
 
 CIntelTemperature::CIntelTemperature()
     : m_pTjMax(nullptr)
@@ -178,21 +179,6 @@ STATUS_CODE CIntelTemperature::__ReadMsr(unsigned long index, KAFFINITY mask, un
     return STATUS_CODE::STATUS_CODE_NO_ERROR;
 }
 
-int FixTemp(int data)
-{
-    if (data > 0 && data <= 120)
-        return data;
-    if (data < 0)
-        return data + 100;
-    else
-    {
-        for (;;)
-        {
-            return FixTemp(data - 50);
-        }
-    }
-}
-
 void CIntelTemperature::Update()
 {
     m_nAllTemp = 0;
@@ -208,7 +194,7 @@ void CIntelTemperature::Update()
         else
         {
             short temp = (short)m_pTjMax[i] - (short)(val >> 16 & 0x7f);
-            temp = FixTemp(temp);
+            temp = FixTemperature(temp);
             if (m_pEachCpuCoreTemp)
                 m_pEachCpuCoreTemp[i] = temp;
 

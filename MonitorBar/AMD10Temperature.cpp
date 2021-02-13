@@ -1,5 +1,6 @@
 #include "AMD10Temperature.h"
 #include"Log.h"
+#include "FixTemperature.cpp"
 
 CAMD10Temperature::CAMD10Temperature()
     : m_sMiscellaneousControlDeviceId(0)
@@ -103,7 +104,7 @@ void CAMD10Temperature::Update()
                 else
                     temp = ((val >> 21) & 0x7FF) / 8.0f;
                 if (m_pEachCpuCoreTemp)
-                    m_pEachCpuCoreTemp[i] = short(temp);
+                    m_pEachCpuCoreTemp[i] = FixTemperature(short(temp));
                 all += temp;
                 ++count;
             }
