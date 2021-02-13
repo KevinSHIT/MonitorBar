@@ -4,5 +4,5 @@
 
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow)
 {
-	return CWin(hInstance, nCmdShow).MessageLoop( );
+    return CWin(hInstance, nCmdShow).MessageLoop();
 }

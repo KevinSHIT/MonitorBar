@@ -7,63 +7,63 @@
 
 extern ULONG g_lDllRef;
 
-CClassFactory::CClassFactory( )
-:m_lRef(1)
+CClassFactory::CClassFactory()
+    :m_lRef(1)
 {
-	InterlockedIncrement(&g_lDllRef);
+    InterlockedIncrement(&g_lDllRef);
 #ifdef _DEBUG
-	char str[64];
-	sprintf_s(str, "g_lDllRef=%lu,CClassFactory构造", g_lDllRef);
-	LOGOUT(str);
+    char str[64];
+    sprintf_s(str, "g_lDllRef=%lu,CClassFactory构造", g_lDllRef);
+    LOGOUT(str);
 #endif
 }
 
 
-CClassFactory::~CClassFactory( )
+CClassFactory::~CClassFactory()
 {
-	InterlockedDecrement(&g_lDllRef);
+    InterlockedDecrement(&g_lDllRef);
 #ifdef _DEBUG
-	char str[64];
-	sprintf_s(str, "g_lDllRef=%lu,CClassFactory析构", g_lDllRef);
-	LOGOUT(str);
+    char str[64];
+    sprintf_s(str, "g_lDllRef=%lu,CClassFactory析构", g_lDllRef);
+    LOGOUT(str);
 #endif
 }
 
-STDMETHODIMP CClassFactory::QueryInterface(REFIID riid, void **ppv)
+STDMETHODIMP CClassFactory::QueryInterface(REFIID riid, void** ppv)
 {
-	QITAB qitab[] =
-	{
-		QITABENT(CClassFactory, IClassFactory),
-		{ 0 },
-	};
-	return QISearch(this, qitab, riid, ppv);
+    QITAB qitab[] =
+    {
+        QITABENT(CClassFactory, IClassFactory),
+        { 0 },
+    };
+    return QISearch(this, qitab, riid, ppv);
 }
 
-STDMETHODIMP_(ULONG) CClassFactory::AddRef( )
+STDMETHODIMP_(ULONG) CClassFactory::AddRef()
 {
-	return InterlockedIncrement(&m_lRef);
+    return InterlockedIncrement(&m_lRef);
 }
 
-STDMETHODIMP_(ULONG) CClassFactory::Release( )
+STDMETHODIMP_(ULONG) CClassFactory::Release()
 {
-	auto l = InterlockedDecrement(&m_lRef);
-	if (!l)delete this;
-	return l;
+    auto l = InterlockedDecrement(&m_lRef);
+    if (!l)delete this;
+    return l;
 }
 
-STDMETHODIMP CClassFactory::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppv)
+STDMETHODIMP CClassFactory::CreateInstance(IUnknown* pUnkOuter, REFIID riid, void** ppv)
 {
-	if (pUnkOuter)return CLASS_E_NOAGGREGATION;
-	CDeskBand *pDeskBand = new CDeskBand;
-	if (!pDeskBand)return E_OUTOFMEMORY;
-	HRESULT hr = pDeskBand->QueryInterface(riid, ppv);
-	pDeskBand->Release( );
-	return hr;
+    if (pUnkOuter)return CLASS_E_NOAGGREGATION;
+    CDeskBand* pDeskBand = new CDeskBand;
+    if (!pDeskBand)return E_OUTOFMEMORY;
+    HRESULT hr = pDeskBand->QueryInterface(riid, ppv);
+    pDeskBand->Release();
+    return hr;
 }
 
 STDMETHODIMP CClassFactory::LockServer(BOOL fLock)
 {
-	if (fLock) InterlockedIncrement(&g_lDllRef);
-	else InterlockedDecrement(&g_lDllRef);
-	return S_OK;
+    if (fLock) InterlockedIncrement(&g_lDllRef);
+    else InterlockedDecrement(&g_lDllRef);
+    return S_OK;
 }

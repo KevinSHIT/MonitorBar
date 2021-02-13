@@ -11,8 +11,8 @@
 class CLog
 {
 public:
-	CLog(const char*);
-	CLog(const char*,unsigned int,const char*,unsigned long);
-	~CLog( ){}
+    CLog(const char*);
+    CLog(const char*, unsigned int, const char*, unsigned long);
+    ~CLog() {}
 };
 

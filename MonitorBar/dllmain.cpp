@@ -27,18 +27,18 @@ BOOL APIENTRY DllMain(HINSTANCE hInst, DWORD dwReason, LPVOID)
 	return TRUE;
 }
 
-STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, void**ppv)
+STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, void** ppv)
 {
 	if (!ppv)return E_INVALIDARG;
 	if (!IsEqualCLSID(rclsid, CLSID_DeskBand))return CLASS_E_CLASSNOTAVAILABLE;
-	CClassFactory * pClassFactory = new CClassFactory;
+	CClassFactory* pClassFactory = new CClassFactory;
 	if (!pClassFactory)return E_OUTOFMEMORY;
 	HRESULT hr = pClassFactory->QueryInterface(riid, ppv);
-	pClassFactory->Release( );
+	pClassFactory->Release();
 	return hr;
 }
 
-STDAPI DllCanUnloadNow( )
+STDAPI DllCanUnloadNow()
 {
 #ifdef _DEBUG
 	char str[64];
@@ -48,7 +48,7 @@ STDAPI DllCanUnloadNow( )
 	return g_lDllRef ? S_FALSE : S_OK;
 }
 
-STDAPI DllRegisterServer( )
+STDAPI DllRegisterServer()
 {
 	wchar_t szCLSID[] = L"CLSID\\",
 		szInprocServer32[] = L"\\InprocServer32";
@@ -58,11 +58,11 @@ STDAPI DllRegisterServer( )
 	HKEY hKey;
 	LSTATUS lRes;
 	lRes = RegCreateKeyExW(HKEY_CLASSES_ROOT, szSubKey, 0, nullptr,
-						   REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, &hKey,
-						   nullptr);
+		REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, &hKey,
+		nullptr);
 	if (ERROR_SUCCESS != lRes)
 		return HRESULT_FROM_WIN32(lRes);
-	lRes = RegSetValueExW(hKey, nullptr, 0, REG_SZ, (LPBYTE)szAppName, sizeof( szAppName ));
+	lRes = RegSetValueExW(hKey, nullptr, 0, REG_SZ, (LPBYTE)szAppName, sizeof(szAppName));
 	if (ERROR_SUCCESS != lRes)
 	{
 		RegCloseKey(hKey);
@@ -70,17 +70,17 @@ STDAPI DllRegisterServer( )
 	}
 	wcscpy_s(szSubKey + _countof(szCLSID) - 1 + 39 - 1, _countof(szInprocServer32), szInprocServer32);
 	lRes = RegCreateKeyExW(HKEY_CLASSES_ROOT, szSubKey, 0, nullptr,
-						   REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, &hKey,
-						   nullptr);
+		REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, &hKey,
+		nullptr);
 	if (ERROR_SUCCESS != lRes)
 		return HRESULT_FROM_WIN32(lRes);
 	wchar_t szModule[MAX_PATH];
 	if (!GetModuleFileNameW(g_hInst, szModule, _countof(szModule)))
 	{
-		if (GetLastError( ))return HRESULT_FROM_WIN32(GetLastError( ));
+		if (GetLastError())return HRESULT_FROM_WIN32(GetLastError());
 		else return E_FAIL;
 	}
-	lRes = RegSetValueExW(hKey, nullptr, 0, REG_SZ, (LPBYTE)szModule, (DWORD)( wcslen(szModule)*sizeof( wchar_t ) ));
+	lRes = RegSetValueExW(hKey, nullptr, 0, REG_SZ, (LPBYTE)szModule, (DWORD)(wcslen(szModule) * sizeof(wchar_t)));
 	if (ERROR_SUCCESS != lRes)
 	{
 		RegCloseKey(hKey);
@@ -91,17 +91,17 @@ STDAPI DllRegisterServer( )
 	RegCloseKey(hKey);
 	if (ERROR_SUCCESS != lRes)
 		return HRESULT_FROM_WIN32(lRes);
-	ICatRegister *pCatRegister;
+	ICatRegister* pCatRegister;
 	HRESULT hr = CoCreateInstance(CLSID_StdComponentCategoriesMgr, nullptr,
-								  CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCatRegister));
+		CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCatRegister));
 	if (FAILED(hr))return hr;
 	CATID catid = CATID_DeskBand;
 	hr = pCatRegister->RegisterClassImplCategories(CLSID_DeskBand, 1, &catid);
-	pCatRegister->Release( );
+	pCatRegister->Release();
 	return hr;
 }
 
-STDAPI DllUnregisterServer( )
+STDAPI DllUnregisterServer()
 {
 	wchar_t szCLSID[] = L"CLSID\\";
 	wchar_t szSubKey[_countof(szCLSID) - 1 + 39 - 1 + 1] = { 0 };
@@ -110,7 +110,7 @@ STDAPI DllUnregisterServer( )
 	return HRESULT_FROM_WIN32(RegDeleteTreeW(HKEY_CLASSES_ROOT, szSubKey));
 }
 
-STDAPI DllIsRegisterServer( )
+STDAPI DllIsRegisterServer()
 {
 	wchar_t szCLSID[] = L"CLSID\\";
 	wchar_t szSubKey[_countof(szCLSID) - 1 + 39 - 1 + 1] = { 0 };
@@ -132,21 +132,21 @@ STDAPI DllIsRegisterServer( )
 LRESULT CALLBACK CallWndRetProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	LPCWPRETSTRUCT lpMsg = (LPCWPRETSTRUCT)lParam;
-	if (HC_ACTION == nCode&&lpMsg&&WM_INITDIALOG == lpMsg->message&&lpMsg->hwnd)
+	if (HC_ACTION == nCode && lpMsg && WM_INITDIALOG == lpMsg->message && lpMsg->hwnd)
 	{
 		int titleLen = GetWindowTextLengthW(lpMsg->hwnd);
 		wchar_t* lpStr = new wchar_t[titleLen + 1]();
-		GetWindowTextW(lpMsg->hwnd, lpStr, titleLen+1);
+		GetWindowTextW(lpMsg->hwnd, lpStr, titleLen + 1);
 		if (!wcscmp(lpStr, szAppName))
 		{
 			HWND hD = FindWindowEx(lpMsg->hwnd, NULL, TEXT("DirectUIHWND"), NULL);
 			if (hD)
 			{
 				for (HWND hc = FindWindowEx(hD, NULL, TEXT("CtrlNotifySink"), NULL);
-					 hc; hc = FindWindowEx(hD, hc, TEXT("CtrlNotifySink"), NULL))
+					hc; hc = FindWindowEx(hD, hc, TEXT("CtrlNotifySink"), NULL))
 				{
-					HWND hb = FindWindowEx(hc, NULL,WC_BUTTON, NULL);
-					if (hb&&GetWindowLongPtr(hb, GWL_STYLE)&BS_DEFPUSHBUTTON)
+					HWND hb = FindWindowEx(hc, NULL, WC_BUTTON, NULL);
+					if (hb && GetWindowLongPtr(hb, GWL_STYLE) & BS_DEFPUSHBUTTON)
 					{
 						SendMessage(hc, WM_COMMAND, BN_CLICKED, (LPARAM)hb);
 						HANDLE hEvent = OpenEvent(EVENT_ALL_ACCESS, TRUE, szAppName);
@@ -163,7 +163,7 @@ LRESULT CALLBACK CallWndRetProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 STDAPI DllShowMonitorBar(BOOL fShowOrHide)
 {
-	ITrayDeskBand *pTrayDeskBand = NULL;
+	ITrayDeskBand* pTrayDeskBand = NULL;
 	CoInitialize(NULL);
 	HRESULT hr = CoCreateInstance(CLSID_TrayDeskBand, NULL, CLSCTX_ALL, IID_PPV_ARGS(&pTrayDeskBand));
 	// Vista and higher operating system
@@ -171,18 +171,18 @@ STDAPI DllShowMonitorBar(BOOL fShowOrHide)
 	{
 		if (TRUE == fShowOrHide)
 		{
-			hr = pTrayDeskBand->DeskBandRegistrationChanged( );
+			hr = pTrayDeskBand->DeskBandRegistrationChanged();
 			if (SUCCEEDED(hr))
 			{
 				int i = 5;
 				for (hr = pTrayDeskBand->IsDeskBandShown(CLSID_DeskBand);
-					 FAILED(hr) && i > 0;
-					 --i, hr = pTrayDeskBand->IsDeskBandShown(CLSID_DeskBand))
-					 Sleep(100);
-				if (SUCCEEDED(hr) && ( S_FALSE == hr ))
+					FAILED(hr) && i > 0;
+					--i, hr = pTrayDeskBand->IsDeskBandShown(CLSID_DeskBand))
+					Sleep(100);
+				if (SUCCEEDED(hr) && (S_FALSE == hr))
 				{
 					HANDLE hEvent = CreateEvent(NULL, FALSE, FALSE, szAppName);
-					HHOOK hhk = SetWindowsHookEx(WH_CALLWNDPROCRET, CallWndRetProc,g_hInst, 0);
+					HHOOK hhk = SetWindowsHookEx(WH_CALLWNDPROCRET, CallWndRetProc, g_hInst, 0);
 					hr = pTrayDeskBand->ShowDeskBand(CLSID_DeskBand);
 					WaitForSingleObject(hEvent, 5000/*INFINITE*/);
 					UnhookWindowsHookEx(hhk);
@@ -193,18 +193,18 @@ STDAPI DllShowMonitorBar(BOOL fShowOrHide)
 		else
 		{
 			hr = pTrayDeskBand->IsDeskBandShown(CLSID_DeskBand);
-			if (SUCCEEDED(hr) && ( S_OK == hr ))
+			if (SUCCEEDED(hr) && (S_OK == hr))
 			{
 				hr = pTrayDeskBand->HideDeskBand(CLSID_DeskBand);
 			}
 		}
-		pTrayDeskBand->Release( );
+		pTrayDeskBand->Release();
 	}
 	else
 	{
 		if (TRUE == fShowOrHide)
 		{
-			WCHAR *pBuf = new WCHAR[49];       //很配存储文字串的空间
+			WCHAR* pBuf = new WCHAR[49];       //很配存储文字串的空间
 			StringFromGUID2(CLSID_DeskBand, pBuf, 39);
 			if (!GlobalFindAtom(pBuf))
 				GlobalAddAtom(pBuf);
@@ -213,7 +213,7 @@ STDAPI DllShowMonitorBar(BOOL fShowOrHide)
 		}
 		else
 		{
-			IBandSite* spBandSite=nullptr;
+			IBandSite* spBandSite = nullptr;
 			hr = CoCreateInstance(CLSID_TrayBandSiteService, NULL, CLSCTX_ALL, IID_PPV_ARGS(&spBandSite));
 			if (SUCCEEDED(hr))
 			{
@@ -238,10 +238,10 @@ STDAPI DllShowMonitorBar(BOOL fShowOrHide)
 						}
 					}
 				}
-				spBandSite->Release( );
+				spBandSite->Release();
 			}
 		}
 	}
-	CoUninitialize( );
+	CoUninitialize();
 	return hr;
 }

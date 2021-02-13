@@ -4,5 +4,5 @@ EXPORTS
     DllCanUnloadNow     PRIVATE
     DllRegisterServer   PRIVATE
     DllUnregisterServer PRIVATE
-	DllIsRegisterServer	PRIVATE
-	DllShowMonitorBar	PRIVATE
+    DllIsRegisterServer PRIVATE
+    DllShowMonitorBar   PRIVATE

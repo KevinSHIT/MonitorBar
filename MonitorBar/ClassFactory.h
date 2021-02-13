@@ -1,22 +1,22 @@
 #pragma once
 #include <Unknwn.h>
 class CClassFactory :
-	public IClassFactory
+    public IClassFactory
 {
 public:
-	// IUnknown
-	STDMETHODIMP QueryInterface(REFIID, void**);
-	STDMETHODIMP_(ULONG) AddRef( );
-	STDMETHODIMP_(ULONG) Release( );
+    // IUnknown
+    STDMETHODIMP QueryInterface(REFIID, void**);
+    STDMETHODIMP_(ULONG) AddRef();
+    STDMETHODIMP_(ULONG) Release();
 
-	// IClassFactory
-	STDMETHODIMP CreateInstance(IUnknown*, REFIID, void**);
-	STDMETHODIMP LockServer(BOOL);
+    // IClassFactory
+    STDMETHODIMP CreateInstance(IUnknown*, REFIID, void**);
+    STDMETHODIMP LockServer(BOOL);
 
-	CClassFactory( );
+    CClassFactory();
 protected:
-	~CClassFactory( );
+    ~CClassFactory();
 private:
-	ULONG	m_lRef;
+    ULONG	m_lRef;
 };
 
