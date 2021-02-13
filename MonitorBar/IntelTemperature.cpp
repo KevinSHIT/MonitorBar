@@ -3,18 +3,18 @@
 #include<intrin.h>
 #include"Log.h"
 
-CIntelTemperature::CIntelTemperature( )
-: m_pTjMax(nullptr)
-, dwIOCTL_READ_MSR(CTL_CODE(_GetIoctlType( ), 0x821, METHOD_BUFFERED, FILE_ANY_ACCESS))
-, m_nAllTemp(0)
-, m_dwNumOfAvailableProcesses(0)
-, nIA32_THERM_STATUS_MSR(0x019C)
-, nIA32_TEMPERATURE_TARGET(0x01A2)
+CIntelTemperature::CIntelTemperature()
+	: m_pTjMax(nullptr)
+	, dwIOCTL_READ_MSR(CTL_CODE(_GetIoctlType(), 0x821, METHOD_BUFFERED, FILE_ANY_ACCESS))
+	, m_nAllTemp(0)
+	, m_dwNumOfAvailableProcesses(0)
+	, nIA32_THERM_STATUS_MSR(0x019C)
+	, nIA32_TEMPERATURE_TARGET(0x01A2)
 {
 	LOGOUT("CIntelTemperature����");
 }
 
-CIntelTemperature::~CIntelTemperature( )
+CIntelTemperature::~CIntelTemperature()
 {
 	if (m_pTjMax)
 	{
@@ -24,15 +24,15 @@ CIntelTemperature::~CIntelTemperature( )
 	LOGOUT("CIntelTemperature����");
 }
 
-STATUS_CODE CIntelTemperature::Init( )
+STATUS_CODE CIntelTemperature::Init()
 {
 	STATUS_CODE sc = CTemperature::Init();
 	if (STATUS_CODE::STATUS_CODE_NO_ERROR == sc)
-		sc = __Init( );
+		sc = __Init();
 	return sc;
 }
 
-STATUS_CODE CIntelTemperature::__Init( )
+STATUS_CODE CIntelTemperature::__Init()
 {
 	int info[4];
 	__try
@@ -41,16 +41,16 @@ STATUS_CODE CIntelTemperature::__Init( )
 		if (info[0] < 6)
 			return STATUS_CODE::STATUS_CODE_CPUID_LOW;
 		__cpuid(info, 6);
-		if (!( info[0] & 1 ))
+		if (!(info[0] & 1))
 			return STATUS_CODE::STATUS_CODE_UNSUPPORT;
-		switch (_GetFamily( ))
+		switch (_GetFamily())
 		{
 		case 0x06: {
-			switch (_GetModel( )) {
+			switch (_GetModel()) {
 			case 0x0F: // Intel Core 2 (65nm)
-				switch (_GetStepping( )) {
+				switch (_GetStepping()) {
 				case 0x06: // B2
-					switch (_GetCpuCount( )) {
+					switch (_GetCpuCount()) {
 					case 2: __InitTjMax(80 + 10); break;
 					case 4: __InitTjMax(90 + 10); break;
 					default: __InitTjMax(85 + 10); break;
@@ -65,7 +65,7 @@ STATUS_CODE CIntelTemperature::__Init( )
 			case 0x17: // Intel Core 2 (45nm)
 				__InitTjMax(100); break;
 			case 0x1C: // Intel Atom (45nm)
-				switch (_GetStepping( )) {
+				switch (_GetStepping()) {
 				case 0x02: // C0
 					__InitTjMax(90); break;
 				case 0x0A: // A0, B0
@@ -80,35 +80,35 @@ STATUS_CODE CIntelTemperature::__Init( )
 			case 0x2C: // Intel Core i7 LGA1366 (32nm) 6 Core
 			case 0x2E: // Intel Xeon Processor 7500 series (45nm)
 			case 0x2F: // Intel Xeon Processor (32nm)
-				__InitTjMaxFromMsr( );
+				__InitTjMaxFromMsr();
 				break;
 			case 0x2A: // Intel Core i5, i7 2xxx LGA1155 (32nm)
 			case 0x2D: // Next Generation Intel Xeon, i7 3xxx LGA2011 (32nm)
-				__InitTjMaxFromMsr( );
+				__InitTjMaxFromMsr();
 				break;
 			case 0x3A: // Intel Core i5, i7 3xxx LGA1155 (22nm)
 			case 0x3E: // Intel Core i7 4xxx LGA2011 (22nm)
-				__InitTjMaxFromMsr( );
+				__InitTjMaxFromMsr();
 				break;
 			case 0x3C: // Intel Core i5, i7 4xxx LGA1150 (22nm)              
 			case 0x3F: // Intel Xeon E5-2600/1600 v3, Core i7-59xx
 				// LGA2011-v3, Haswell-E (22nm)
 			case 0x45: // Intel Core i5, i7 4xxxU (22nm)
 			case 0x46:
-				__InitTjMaxFromMsr( );
+				__InitTjMaxFromMsr();
 				break;
 			case 0x3D: // Intel Core M-5xxx (14nm)
-				__InitTjMaxFromMsr( );
+				__InitTjMaxFromMsr();
 				break;
 			case 0x36: // Intel Atom S1xxx, D2xxx, N2xxx (32nm)
-				__InitTjMaxFromMsr( );
+				__InitTjMaxFromMsr();
 				break;
 			case 0x37: // Intel Atom E3xxx, Z3xxx (22nm)
 			case 0x4A:
 			case 0x4D: // Intel Atom C2xxx (22nm)
 			case 0x5A:
 			case 0x5D:
-				__InitTjMaxFromMsr( );
+				__InitTjMaxFromMsr();
 				break;
 			default:
 				__InitTjMax(100);
@@ -116,7 +116,7 @@ STATUS_CODE CIntelTemperature::__Init( )
 			}
 		} break;
 		case 0x0F: {
-			switch (_GetModel( )) {
+			switch (_GetModel()) {
 			case 0x00: // Pentium 4 (180nm)
 			case 0x01: // Pentium 4 (130nm)
 			case 0x02: // Pentium 4 (130nm)
@@ -144,9 +144,9 @@ STATUS_CODE CIntelTemperature::__Init( )
 
 STATUS_CODE CIntelTemperature::__ReadMsr(unsigned long index, KAFFINITY mask, unsigned long long* ret)const
 {
-	if (_GetDriverHandle( ) == INVALID_HANDLE_VALUE)
+	if (_GetDriverHandle() == INVALID_HANDLE_VALUE)
 		return STATUS_CODE::STATUS_CODE_UNKNOWN_ERROR;
-	if (!_GetIsMsr( ))
+	if (!_GetIsMsr())
 		return STATUS_CODE::STATUS_CODE_UNKNOWN_ERROR;
 	if (!ret)
 		return STATUS_CODE::STATUS_CODE_INVALID_ARG;
@@ -154,35 +154,50 @@ STATUS_CODE CIntelTemperature::__ReadMsr(unsigned long index, KAFFINITY mask, un
 	BOOL				result = FALSE;
 	HANDLE hThread = nullptr;
 	DWORD_PTR oldMask;
-	if (_GetIsNT( ))
+	if (_GetIsNT())
 	{
-		hThread = GetCurrentThread( );
+		hThread = GetCurrentThread();
 		oldMask = SetThreadAffinityMask(hThread, mask);
 		if (!oldMask)
 			return STATUS_CODE::STATUS_CODE_UNKNOWN_ERROR;
 	}
 	result = DeviceIoControl(
-		_GetDriverHandle( ),
+		_GetDriverHandle(),
 		dwIOCTL_READ_MSR,
 		&index,
 		sizeof index,
 		ret,
-		sizeof *ret,
+		sizeof * ret,
 		&returnedLength,
 		nullptr
-		);
-	if (_GetIsNT( ))
+	);
+	if (_GetIsNT())
 		SetThreadAffinityMask(hThread, oldMask);
 	if (!result)
 		return STATUS_CODE::STATUS_CODE_UNKNOWN_ERROR;
 	return STATUS_CODE::STATUS_CODE_NO_ERROR;
 }
 
-void CIntelTemperature::Update( )
+int FixTemp(int data)
+{
+	if (data > 0 && data <= 120)
+		return data;
+	if (data < 0)
+		return data + 100;
+	else
+	{
+		for (;;)
+		{
+			return FixTemp(data - 50);
+		}
+	}
+}
+
+void CIntelTemperature::Update()
 {
 	m_nAllTemp = 0;
 	m_dwNumOfAvailableProcesses = 0;
-	for (DWORD i = 0; i < GetCpuCoreCount( ); ++i)
+	for (DWORD i = 0; i < GetCpuCoreCount(); ++i)
 	{
 		unsigned long long val;
 		if (STATUS_CODE::STATUS_CODE_NO_ERROR != __ReadMsr(nIA32_THERM_STATUS_MSR, _GetMask(i), &val))
@@ -192,24 +207,21 @@ void CIntelTemperature::Update( )
 		}
 		else
 		{
-			short temp = (short)m_pTjMax[i] - (short)( val >> 16 & 0x7f );
+			short temp = (short)m_pTjMax[i] - (short)(val >> 16 & 0x7f);
+			temp = FixTemp(temp);
 			if (m_pEachCpuCoreTemp)
 				m_pEachCpuCoreTemp[i] = temp;
-			if (temp <= 0)
-			{
-				m_pEachCpuCoreTemp[i] = temp + 100;
-				m_nAllTemp += temp + 100;
-			}
-			else
-				m_nAllTemp += temp;
+
+			m_nAllTemp += temp;
+
 			++m_dwNumOfAvailableProcesses;
 		}
 	}
 	if (m_dwNumOfAvailableProcesses)
-		m_sCur = short(m_nAllTemp / m_dwNumOfAvailableProcesses );
+		m_sCur = short(m_nAllTemp / m_dwNumOfAvailableProcesses);
 }
 
-double CIntelTemperature::GetPercent( )const
+double CIntelTemperature::GetPercent()const
 {
 	if (!m_pTjMax)
 		return 0;
@@ -239,18 +251,18 @@ void CIntelTemperature::__InitTjMax(BYTE tjMax)
 {
 	if (m_pTjMax)
 		delete[] m_pTjMax;
-	m_pTjMax = new BYTE[GetCpuCoreCount( )];
+	m_pTjMax = new BYTE[GetCpuCoreCount()];
 	for (size_t i = 0; i < 4; ++i)
 		m_pTjMax[i] = tjMax;
 }
 
-void CIntelTemperature::__InitTjMaxFromMsr( )
+void CIntelTemperature::__InitTjMaxFromMsr()
 {
 	if (m_pTjMax)
 		delete[] m_pTjMax;
-	m_pTjMax = new BYTE[GetCpuCoreCount( )]( );
+	m_pTjMax = new BYTE[GetCpuCoreCount()]();
 	if (m_pTjMax)
-		for (DWORD i = 0; i < GetCpuCoreCount( ); ++i)
+		for (DWORD i = 0; i < GetCpuCoreCount(); ++i)
 		{
 			unsigned long long val;
 			if (STATUS_CODE::STATUS_CODE_NO_ERROR != __ReadMsr(nIA32_TEMPERATURE_TARGET, _GetMask(i), &val))
